@@ -13,15 +13,15 @@ jobs:
       - run: docker build -t whitechapel5991/react-test -f ./client/Dockerfile.dev ./client
       - run: docker run -e CI=true whitechapel5991/react-test npm test
 
-      - run: docker build -t whitechapel5991/multi-client-10-14 ./client
-      - run: docker build -t whitechapel5991/multi-nginx-10-14 ./nginx
-      - run: docker build -t whitechapel5991/multi-server-10-14 ./server
-      - run: docker build -t whitechapel5991/multi-worker-10-14 ./worker
+      - run: docker build -t whitechapel5991/multi-client-up ./client
+      - run: docker build -t whitechapel5991/multi-nginx-up ./nginx
+      - run: docker build -t whitechapel5991/multi-server-up ./server
+      - run: docker build -t whitechapel5991/multi-worker-up ./worker
  
-      - run: docker push whitechapel5991/multi-client-10-14
-      - run: docker push whitechapel5991/multi-nginx-10-14
-      - run: docker push whitechapel5991/multi-server-10-14
-      - run: docker push whitechapel5991/multi-worker-10-14
+      - run: docker push whitechapel5991/multi-client-up
+      - run: docker push whitechapel5991/multi-nginx-up
+      - run: docker push whitechapel5991/multi-server-up
+      - run: docker push whitechapel5991/multi-worker-up
  
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
