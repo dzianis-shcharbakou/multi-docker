@@ -1,7 +1,7 @@
 const keys = require('./keys');
-const redis = require('redis');
-
-const redisClient = redis.createClient({
+const { createClient } = require('redis');
+ 
+const redisClient = createClient({
   url: `redis://${keys.redisHost}:${keys.redisPort}`,
   retry_strategy: () => 1000,
 });
@@ -14,7 +14,7 @@ function fib(index) {
 }
  
 (async () => {
-  await redisClient.connect();
+  await redisClient.connect().catch(console.error);;
   await sub.connect();
  
   sub.subscribe('insert', (message) => {
