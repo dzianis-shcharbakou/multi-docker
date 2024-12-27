@@ -1,62 +1,31 @@
- version: '3.1'
- services:
-    postgres:
-      image: "postgres:latest"
-      environment:
-        - POSTGRES_PASSWORD=postgres_password
-    redis:
-      image: "redis:latest"
-    nginx:
-      depends_on:
-        - redis
-        - client
-      restart: always
-      build:
-        dockerfile: Dockerfile.dev
-        context: ./nginx
-      ports:
-        - '3050:80'
-    api:
-      depends_on:
-        - redis
-        - postgres
-      build:
-        dockerfile: Dockerfile.dev
-        context: ./server
-      volumes:
-        - /app/node_modules
-        - ./server:/app
-      # ports:
-      #   - "5000:5000"
-      # depends_on:
-      #   - postgres
-      #   - redis
-      environment:
-        - REDIS_HOST=redis
-        - REDIS_PORT=6379
-        - PGUSER=postgres
-        - PGHOST=postgres
-        - PGDATABASE=postgres
-        - PGPASSWORD=postgres_password
-        - PGPORT=5432
-    client: 
-      build:
-        context: ./client
-        dockerfile: Dockerfile.dev
-      volumes:
-        - /app/node_modules
-        - ./client:/app
-      environment:
-        - WDS_SOCKET_PORT=0
-    worker:
-      depends_on:
-        - redis
-      build:
-        context: ./worker
-        dockerfile: Dockerfile.dev
-      volumes:
-        - /app/node_modules
-        - ./worker:/app
-      environment:
-        - REDIS_HOST=redis
-        - REDIS_PORT=6379
+version: "3"
+services:
+  client:
+    image: "whitechapel5991/multi-client-up"
+    mem_limit: 128m
+    hostname: client
+  server:
+    image: "whitechapel5991/multi-server-up"
+    mem_limit: 128m
+    hostname: api
+    environment:
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - PGUSER=$PGUSER
+      - PGHOST=$PGHOST
+      - PGDATABASE=$PGDATABASE
+      - PGPASSWORD=$PGPASSWORD
+      - PGPORT=$PGPORT
+  worker:
+    image: "whitechapel5991/multi-worker-up"
+    mem_limit: 128m
+    hostname: worker
+    environment:
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+  nginx:
+    image: "whitechapel5991/multi-nginx-up"
+    mem_limit: 128m
+    hostname: nginx
+    ports:
+      - "80:80"
